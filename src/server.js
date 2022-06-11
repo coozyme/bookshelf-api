@@ -8,6 +8,11 @@ const init = async () => {
       routes: {
          cors: {
             origin: ['*'],
+            headers: ['Authorization'],
+            exposedHeaders: ['Accept', 'Content-Type'],
+            additionalExposedHeaders: ['Accept'],
+            maxAge: 60,
+            credentials: true
          },
       },
    });

@@ -9,7 +9,7 @@ const addBookshelfHandler = (request, h) => {
    const id = nanoid(16);
    const insertedAt = new Date().toISOString();
    const updatedAt = insertedAt;
-   const finished = false;
+   const finished = pageCount === readPage;
 
    const newAddBookshelf = {
       id, name, year, author, summary, publisher, pageCount, readPage, reading, insertedAt, updatedAt, finished
@@ -17,17 +17,17 @@ const addBookshelfHandler = (request, h) => {
 
    if (request.payload.name == undefined) {
       const response = h.response({
-         status: "fail",
-         message: "Gagal menambahkan buku. Mohon isi nama buku"
+         status: 'fail',
+         message: 'Gagal menambahkan buku. Mohon isi nama buku'
       });
       response.code(400);
       return response;
    }
-   
+
    if (readPage > pageCount) {
       const response = h.response({
-         status: "fail",
-         message: "Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount"
+         status: 'fail',
+         message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount'
       });
       response.code(400);
       return response;
@@ -65,7 +65,6 @@ const getAllBookshelfHandler = (request) => {
    let newData = bookshelfs;
 
    if (bookshelfs.length > 0) {
-      console.log('bookshelfs.length > 0',bookshelfs.length > 0)
       if (isUsingQuery) {
          if (name !== undefined) {
             newData = bookshelfs.filter((book) => book.name.toString().toUpperCase()
@@ -99,20 +98,18 @@ const getAllBookshelfHandler = (request) => {
          datafilter.push(picked);
       });
 
-      console.log('dasd', datafilter);
       return {
-         "status": "success",
-         "data": {
-            "books": datafilter,
+         'status': 'success',
+         'data': {
+            'books': datafilter,
          }
       }
 
    } else {
-      console.log('false',false)
-       return {
-         "status": "success",
-         "data": {
-            "books": [],
+      return {
+         'status': 'success',
+         'data': {
+            'books': [],
          }
       }
    }
@@ -138,7 +135,7 @@ const getBookshelfByIdHandler = (request, h) => {
 
    const response = h.response({
       status: 'fail',
-      message: "Buku tidak ditemukan",
+      message: 'Buku tidak ditemukan',
    });
    response.code(404);
    return response
@@ -156,7 +153,6 @@ const editBookshelfHandler = (request, h) => {
    const updatedAt = new Date().toISOString();
 
    const index = bookshelfs.findIndex((book) => book.id === bookId);
-   console.log('index', index)
 
    if (index !== -1) {
       if (name !== undefined) {
@@ -209,11 +205,11 @@ const editBookshelfHandler = (request, h) => {
 
 const deleteBookByIdHandler = (request, h) => {
    const { bookId } = request.params;
-
-   const index = bookshelfs.findIndex((book) => book.id === bookId);
+   let newAddBookshelf = bookshelfs
+   const index = newAddBookshelf.findIndex((book) => book.id === bookId);
 
    if (index !== -1) {
-      bookshelfs.splice(index, 1);
+      newAddBookshelf.splice(bookId, 1);
 
       const response = h.response({
          status: 'success',
